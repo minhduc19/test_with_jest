@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
-
+const httpMocks = require('node-mocks-http');
+res = httpMocks.createResponse();
 
 const TodoSchema = new mongoose.Schema({
   title: {
@@ -14,9 +15,13 @@ const TodoSchema = new mongoose.Schema({
 
 const TodoModel = mongoose.model("Todo", TodoSchema);
 
+const testModel = () => {
+	return res;
+}
+
 function add(a) {
 	return a;
 }
 
 
-module.exports = {TodoModel,add}
+module.exports = {TodoModel,add,testModel}

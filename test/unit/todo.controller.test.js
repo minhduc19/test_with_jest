@@ -24,7 +24,7 @@ describe("TodoController.createTodo", () => {
   });
 
   it("should call TodoModel.create", () => {
-  	
+  	//TodoModel.create.mockReturnValue(newTodo);
   	TodoController.createTodo(req,res,next);
   	expect(TodoModel.create).toBeCalledWith(newTodo);
   })
@@ -38,7 +38,7 @@ describe("TodoController.createTodo", () => {
   it("should return json body in response", () => {
     TodoModel.create.mockReturnValue(newTodo);
     TodoController.createTodo(req, res, next);
-    expect(res._getJSONData()).toStrictEqual(newTodo);
+    expect(res._getJSONData()).toEqual(newTodo);
   });
 
 });
