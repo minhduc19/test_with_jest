@@ -1,27 +1,27 @@
 const mongoose = require("mongoose");
-const httpMocks = require('node-mocks-http');
-res = httpMocks.createResponse();
 
-const TodoSchema = new mongoose.Schema({
-  title: {
-    type: String,
-    required: true
-  },
-  done: {
-    type: Boolean,
-    required: true
+
+
+
+class testModel {
+  create(test){
+    return test
   }
-});
-
-const TodoModel = mongoose.model("Todo", TodoSchema);
-
-const testModel = () => {
-	return res;
 }
 
-function add(a) {
-	return a;
-}
+const TodoModel = new testModel();
 
+// const TodoSchema = new mongoose.Schema({
+//   title: {
+//     type: String,
+//     required: true
+//   },
+//   done: {
+//     type: Boolean,
+//     required: true
+//   }
+// });
 
-module.exports = {TodoModel,add,testModel}
+// const TodoModel = mongoose.model("Todo", TodoSchema);
+
+module.exports = {TodoModel}

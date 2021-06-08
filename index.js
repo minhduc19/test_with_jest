@@ -1,10 +1,15 @@
 const express = require("express");
 const app = express();
-const httpMocks = require('node-mocks-http');
+app.use(express.json());
 const todoRoute = require('./routes/todo.routes');
 
-//app.use(express.json());
-app.use("/todos",todoRoute);
+app.use("/todos/",todoRoute);
+
+//console.log(todoRoute);
+
+app.post("/todo_test", (req,res) => {
+	res.status(200).json("test");
+})
 
 
 app.get("/", (req, res) => {
