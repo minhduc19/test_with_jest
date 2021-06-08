@@ -2,9 +2,18 @@ const express = require("express");
 const app = express();
 app.use(express.json());
 const todoRoute = require('./routes/todo.routes');
+const TodoModel = require("./models/todo.model");
+
 
 app.use("/todos/",todoRoute);
-const TodoModel = require("./models/todo.model");
+
+app.use("/todos/",(err,req,res,next) => {
+	console.log(err);
+	res.status(500).json({"message": "something is missing in the request"});
+})
+
+
+
 
 //console.log(TodoModel.db("todos"));
 
@@ -17,14 +26,6 @@ async function add(){
 //add().then(console.log("inserted"));
 
 
-app.post("/todo_test", (req,res) => {
-	res.status(200).json("test");
-})
-
-
-app.get("/", (req, res) => {
-  res.json("Hello world");
-});
 
 //app.listen(3000, () => {
 //  console.log("Server is now running!");

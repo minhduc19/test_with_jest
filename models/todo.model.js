@@ -3,9 +3,15 @@ const config = require('../knexfile.js');
 const db = knex(config.development)
 
 async function add(data) {
-  const createdData = await db("todos").insert(data);
-  return createdData;
+ [createdId] = await db("todos").insert(data);
+ return await find(createdId);
+  //return {"title":"shopping","done":true};
 }
 
-module.exports = {db,add}
+async function find(id) {
+ return foundData = await db('todos').where({id:id}).first();
+  //return {"title":"shopping","done":true};
+}
+
+module.exports = {db,add,find}
 

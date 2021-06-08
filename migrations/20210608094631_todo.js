@@ -4,7 +4,7 @@ exports.up = function(knex) {
     .createTable('todos', function (table) {
        table.increments('id');
        table.string('title', 255).notNullable();
-       table.string('done', 255).notNullable();
+       table.boolean('done').notNullable();
     })
 };
 
