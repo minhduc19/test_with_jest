@@ -9,12 +9,27 @@ async function createTodo (req,res,next) {
 	} catch(err) {
 		//next("test"); 
 		next(err);
-	}
-	
-	
+	}	
+}
 
+async function getTodo(req,res,next) {
+	try{
+		const foundTodo = await TodoModel.find(res.body);
+		return res.status(200).json(foundTodo);
+	}catch(err) {
+		next(err)
+	}
+}
+
+async function getAllTodo(req,res,next) {		
+	try{
+		const allTodos = await TodoModel.findAll();
+		return res.status(200).json(allTodos);
+	}catch(err){
+		next(err)
+	}
 }
 
 
 
-module.exports = {createTodo}
+module.exports = {createTodo,getTodo,getAllTodo}

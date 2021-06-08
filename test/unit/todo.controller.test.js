@@ -2,21 +2,60 @@ const TodoController = require("../../controllers/todo.controller");
 const TodoModel = require("../../models/todo.model");
 const httpMocks = require('node-mocks-http');
 const newTodo = require("../../mock_data/todo.json");
+const allTodo = require("../../mock_data/allTodo.json");
 
-TodoModel.db("todos").insert = jest.fn();
+
+
+TodoModel.find = jest.fn();
 TodoModel.add = jest.fn();
+TodoModel.findAll = jest.fn();
 
 let req, res, next;
 
 beforeEach(()=>{
-
-
 	req = httpMocks.createRequest();
-
 	res = httpMocks.createResponse();
   next = jest.fn();
 	//req.body = newTodo;
 });
+
+describe("TodoController.getTodo", () => {
+  it("should be a getTodo function", () => {
+    expect(typeof TodoController.getTodo).toBe("function");
+  })
+})
+
+describe("TodoController.getAllTodo", () => {
+  it("should be a function", () => {
+    expect(typeof TodoController.getAllTodo).toBe("function");
+  })
+
+  it("should call TodoModel.find function", async () => {
+    await TodoController.getAllTodo(req,res,next);
+    expect(TodoModel.findAll).toHaveBeenCalled();
+  })
+
+  it("should return code 200 and a list of all todos", async () => {
+    TodoModel.findAll.mockReturnValue(allTodo);
+    console.log(TodoModel.findAll("test"));
+    //console.log("after todoModel")
+    await TodoController.getAllTodo(req,res,next);
+    expect(res.statusCode).toBe(200);
+    expect(res._isEndCalled()).toBeTruthy();
+    expect(res._getJSONData()).toStrictEqual(allTodo);
+    //console.log(res._getJSONData());
+
+  })
+
+  it("should handle errors", async () => {
+    const errorMessage = { message: "Cannot find the todo" };
+    const rejectedPromise = Promise.reject(errorMessage);
+    TodoModel.findAll.mockReturnValue(rejectedPromise);
+    await TodoController.getAllTodo(req, res, next);
+    expect(next).toBeCalledWith(errorMessage);
+  });
+
+})
 
 describe("TodoController.createTodo", () => {
 
@@ -54,7 +93,7 @@ describe("TodoController.createTodo", () => {
     expect(next).toBeCalledWith(errorMessage);
   });
 
- 
+
 
 });
 

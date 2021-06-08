@@ -13,5 +13,9 @@ async function find(id) {
   //return {"title":"shopping","done":true};
 }
 
-module.exports = {db,add,find}
+async function findAll(){
+  return allData = await db('todos').select();
+}
+
+module.exports = {db,add,find,findAll}
 
