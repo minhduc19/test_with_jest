@@ -1,27 +1,11 @@
-const mongoose = require("mongoose");
+const knex = require('knex');
+const config = require('../knexfile.js');
+const db = knex(config.development)
 
-
-
-
-class testModel {
-  create(test){
-    return test
-  }
+async function add(data) {
+  const createdData = await db("todos").insert(data);
+  return createdData;
 }
 
-const TodoModel = new testModel();
+module.exports = {db,add}
 
-// const TodoSchema = new mongoose.Schema({
-//   title: {
-//     type: String,
-//     required: true
-//   },
-//   done: {
-//     type: Boolean,
-//     required: true
-//   }
-// });
-
-// const TodoModel = mongoose.model("Todo", TodoSchema);
-
-module.exports = {TodoModel}

@@ -4,8 +4,18 @@ app.use(express.json());
 const todoRoute = require('./routes/todo.routes');
 
 app.use("/todos/",todoRoute);
+const TodoModel = require("./models/todo.model");
 
-//console.log(todoRoute);
+//console.log(TodoModel.db("todos"));
+
+async function add(){
+  await TodoModel.db("todos").insert({"title":"shopping","done":"true"});
+}
+
+
+
+//add().then(console.log("inserted"));
+
 
 app.post("/todo_test", (req,res) => {
 	res.status(200).json("test");

@@ -1,15 +1,20 @@
 const TodoController = require("../../controllers/todo.controller");
 const TodoModel = require("../../models/todo.model");
 const httpMocks = require('node-mocks-http');
-const newTodo = {"title":"shopping","done":"true"};
+const newTodo = require("../../mock_data/todo.json");
 
-TodoModel.create = jest.fn();
+TodoModel.db("todos").insert = jest.fn();
+TodoModel.add = jest.fn();
 
 let req, res, next;
 
 beforeEach(()=>{
+
+
 	req = httpMocks.createRequest();
+  
 	res = httpMocks.createResponse();
+  next = jest.fn();
 	//req.body = newTodo;
 });
 
@@ -23,22 +28,22 @@ describe("TodoController.createTodo", () => {
     expect(typeof TodoController.createTodo).toBe("function");
   });
 
-  it("should call TodoModel.create", () => {
-  	//TodoModel.create.mockReturnValue(newTodo);
-  	TodoController.createTodo(req,res,next);
-  	expect(TodoModel.create).toBeCalledWith(newTodo);
-  })
+  it("should call TodoModel.db.insert",   () => {
+    TodoController.createTodo(req,res,next);
+    expect(TodoModel.add).toBeCalledWith(newTodo);
 
-  it("should return 200 response", () => {
-  	TodoController.createTodo(req,res,next);
+  });
+
+  it("should return 200 response", async () => {
+  	await TodoController.createTodo(req,res,next);
   	expect(res.statusCode).toBe(200);
   	expect(res._isEndCalled()).toBeTruthy();
   })
 
-  it("should return json body in response", () => {
-    TodoModel.create.mockReturnValue(newTodo);
-    TodoController.createTodo(req, res, next);
-    expect(res._getJSONData()).toEqual(newTodo);
+  it("should return json body in response", async () => {
+    //TodoModel.db("todos").insert.mockReturnValue(newTodo);
+    await TodoController.createTodo(req, res, next);
+    expect(res._getJSONData()).toStrictEqual(newTodo);
   });
 
 });
