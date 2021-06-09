@@ -12,6 +12,11 @@ app.use("/todos/",(err,req,res,next) => {
 	res.status(500).json({"message": "something is missing in the request"});
 })
 
+app.use("/todos/:todoID",(err,req,res,next) => {
+	console.log(err);
+	res.status(500).json({"message": "cannot find this item in the database"});
+})
+
 
 
 

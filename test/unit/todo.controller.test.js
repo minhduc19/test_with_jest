@@ -23,6 +23,36 @@ describe("TodoController.getTodo", () => {
   it("should be a getTodo function", () => {
     expect(typeof TodoController.getTodo).toBe("function");
   })
+
+  it("should call TodoModel.find",async () => {
+    req.params.todoId = 1;
+   await TodoController.getTodo(req,res,next);
+    expect(TodoModel.find).toHaveBeenCalled();
+  })
+
+  it("should return code 200 and return one todo", async () => {
+    TodoModel.find.mockReturnValue(newTodo);
+    await TodoController.getTodo(req,res,next);
+    expect(res.statusCode).toBe(200);
+    expect(res._isEndCalled()).toBeTruthy();
+    expect(res._getJSONData()).toStrictEqual(newTodo);
+  })
+
+  it("should handle errors", async () => {
+    const errorMessage = { message: "Cannot find the requested todo" };
+    const rejectedPromise = Promise.reject(errorMessage);
+    TodoModel.find.mockReturnValue(rejectedPromise);
+    await TodoController.getTodo(req, res, next);
+    expect(next).toBeCalledWith(errorMessage);
+  });
+
+  it("shoule return 404 when cannot find item in database", async () => {
+    TodoModel.find.mockReturnValue(null);
+    await TodoController.getTodo(req,res,next);
+    expect(res.statusCode).toBe(404);
+    expect(res._isEndCalled()).toBeTruthy();
+  })
+
 })
 
 describe("TodoController.getAllTodo", () => {
@@ -48,7 +78,7 @@ describe("TodoController.getAllTodo", () => {
   })
 
   it("should handle errors", async () => {
-    const errorMessage = { message: "Cannot find the todo" };
+    const errorMessage = { message: "Cannot find all todos" };
     const rejectedPromise = Promise.reject(errorMessage);
     TodoModel.findAll.mockReturnValue(rejectedPromise);
     await TodoController.getAllTodo(req, res, next);

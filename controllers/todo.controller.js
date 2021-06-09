@@ -14,8 +14,13 @@ async function createTodo (req,res,next) {
 
 async function getTodo(req,res,next) {
 	try{
-		const foundTodo = await TodoModel.find(res.body);
-		return res.status(200).json(foundTodo);
+		const foundTodo = await TodoModel.find(req.params.todoID);
+		if (foundTodo){
+			return res.status(200).json(foundTodo);
+		} else {
+			return res.status(404).send("cannot find the item");
+		}
+		
 	}catch(err) {
 		next(err)
 	}
