@@ -35,6 +35,38 @@ async function getAllTodo(req,res,next) {
 	}
 }
 
+async function updateTodo(req,res,next) {		
+	try{
+		const updatedTodo = await TodoModel.update(req.params.todoId,req.body);
+		if(updatedTodo){
+			return res.status(200).json(updatedTodo);
+		} else {
+			//return res.status(404).send("cannot find item");
+			return res.status(200).json(updatedTodo);
+		}
+		
+	}catch(err){
+		next(err)
+	}
+}
+
+async function findByIdAndDelete(req,res,next) {		
+	try{
+		const deletedTodo = await TodoModel.deleteTodo(req.params.todoId,req.body);
+		if(deletedTodo){
+			return res.status(200).json({"deleted todo has row":`${deletedTodo}`});
+		} else {
+			return res.status(404).send("cannot find item to delete");
+		}
+		
+	}catch(err){
+		next(err)
+	}
+}
 
 
-module.exports = {createTodo,getTodo,getAllTodo}
+
+
+
+
+module.exports = {createTodo,getTodo,getAllTodo,updateTodo,findByIdAndDelete}

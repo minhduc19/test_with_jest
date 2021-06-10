@@ -4,11 +4,7 @@ const httpMocks = require('node-mocks-http');
 const newTodo = require("../../mock_data/todo.json");
 const allTodo = require("../../mock_data/allTodo.json");
 
-
-
-TodoModel.find = jest.fn();
-TodoModel.add = jest.fn();
-TodoModel.findAll = jest.fn();
+jest.mock("../../models/todo.model");
 
 let req, res, next;
 
@@ -18,6 +14,77 @@ beforeEach(()=>{
   next = jest.fn();
 	//req.body = newTodo;
 });
+
+describe("TodoController.findByIdAndDelete", () => {
+  it("should be an findByIdAndDelete function", () => {
+    expect(typeof TodoController.findByIdAndDelete).toBe("function");
+  })
+
+  it("should call function TodoModel.delete", async () => {
+    req.params.todoId = 1;
+    await TodoController.findByIdAndDelete(req,res,next);
+    expect(TodoModel.deleteTodo).toHaveBeenCalled();
+  })
+
+  it("should return code 200 and return one todo", async () => {
+    TodoModel.deleteTodo.mockReturnValue(newTodo);
+    await TodoController.findByIdAndDelete(req,res,next);
+    expect(res.statusCode).toBe(200);
+    expect(res._isEndCalled()).toBeTruthy();
+    //expect(res._getJSONData()).toStrictEqual(newTodo);
+  })
+
+  it("should handle errors", async () => {
+    const errorMessage = { message: "Cannot delete the requested todo" };
+    const rejectedPromise = Promise.reject(errorMessage);
+    TodoModel.deleteTodo.mockReturnValue(rejectedPromise);
+    await TodoController.findByIdAndDelete(req, res, next);
+    expect(next).toBeCalledWith(errorMessage);
+  });
+
+  it("shoule return 404 when cannot update item in database", async () => {
+    TodoModel.deleteTodo.mockReturnValue(null);
+    await TodoController.findByIdAndDelete(req,res,next);
+    expect(res.statusCode).toBe(404);
+    expect(res._isEndCalled()).toBeTruthy();
+  })
+})
+
+describe("TodoController.updateTodo", () => {
+  it("should be an updateTodo function", () => {
+    expect(typeof TodoController.updateTodo).toBe("function");
+  });
+
+  it("should call function todoModel.update", async () => {
+    req.params.todoId = 1;
+    await TodoController.updateTodo(req,res,next)
+    expect(TodoModel.update).toHaveBeenCalled();
+  })
+
+  it("should return code 200 and return one todo", async () => {
+    TodoModel.update.mockReturnValue(newTodo);
+    await TodoController.updateTodo(req,res,next);
+    expect(res.statusCode).toBe(200);
+    expect(res._isEndCalled()).toBeTruthy();
+    expect(res._getJSONData()).toStrictEqual(newTodo);
+  })
+  
+  it("should handle errors", async () => {
+    const errorMessage = { message: "Cannot update the requested todo" };
+    const rejectedPromise = Promise.reject(errorMessage);
+    TodoModel.update.mockReturnValue(rejectedPromise);
+    await TodoController.updateTodo(req, res, next);
+    expect(next).toBeCalledWith(errorMessage);
+  });
+
+  it("should return 404 when cannot update item in database", async () => {
+    TodoModel.update.mockReturnValue(null);
+    await TodoController.updateTodo(req,res,next);
+    //expect(res.statusCode).toBe(404);
+    expect(res._isEndCalled()).toBeTruthy();
+  })
+
+})
 
 describe("TodoController.getTodo", () => {
   it("should be a getTodo function", () => {

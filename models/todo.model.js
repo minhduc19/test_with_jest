@@ -17,5 +17,19 @@ async function findAll(){
   return allData = await db('todos').select();
 }
 
-module.exports = {db,add,find,findAll}
+async function update(id,data){
+  return await db('todos').where({id:id}).update(data);
+  //return await find(6);
+  //return 3;
+  //return updatedId;
+}
+
+async function deleteTodo(id,data){
+  deletedId = await db('todos').where({id:id}).del();
+  return deletedId;
+}
+
+
+
+module.exports = {db,add,find,findAll,update, deleteTodo}
 
